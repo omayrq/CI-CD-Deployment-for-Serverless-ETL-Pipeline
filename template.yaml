@@ -1,0 +1,28 @@
+Resources:
+
+  RawBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: etl-prod-demo-123
+
+  GlueRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: glue.amazonaws.com
+            Action: sts:AssumeRole
+
+  GlueJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: sales-etl-job
+      Role: !Ref GlueRole
+      Command:
+        Name: glueetl
+        ScriptLocation: s3://etl-prod-demo-123/scripts/etl_job.py
+      GlueVersion: "4.0"
+      WorkerType: G.1X
+      NumberOfWorkers: 2

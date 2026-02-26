@@ -1,0 +1,11 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Install phase
+
+  build:
+    commands:
+      - echo Uploading ETL script to S3
+      - aws s3 cp scripts/etl_job.py s3://etl-prod-demo-123/scripts/
