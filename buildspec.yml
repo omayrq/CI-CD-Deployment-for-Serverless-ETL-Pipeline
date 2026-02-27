@@ -11,6 +11,8 @@ phases:
   build:
     commands:
       - echo "Tests passed! Syncing script to S3..."
-      - aws s3 cp scripts/etl_job.py s3://my-etl-data-bucket-$AWS_ACCOUNT_ID/scripts/
-      - echo "Deploying CloudFormation Stack..."
-      - aws cloudformation deploy --template-file template.yaml --stack-name my-etl-stack --capabilities CAPABILITY_NAMED_IAM
+      # Use your actual account ID here
+      - aws s3 cp scripts/etl_job.py s3://my-etl-data-bucket-${AWS::AccountId}/scripts/etl_job.py
+artifacts:
+  files:
+    - template.yaml
