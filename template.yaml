@@ -1,28 +1,37 @@
-Resources:
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Serverless ETL Infrastructure
 
-  RawBucket:
+Resources:
+  # 1. Storage for our data and scripts
+  DataBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: etl-prod-demo-123
+      BucketName: !Sub "my-etl-data-bucket-${AWS::AccountId}"
 
+  # 2. Permissions for Glue to run
   GlueRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
+        Version: "2012-10-17"
         Statement:
           - Effect: Allow
             Principal:
               Service: glue.amazonaws.com
             Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
 
-  GlueJob:
+  # 3. The ETL Job itself
+  MyGlueJob:
     Type: AWS::Glue::Job
     Properties:
       Name: sales-etl-job
-      Role: !Ref GlueRole
+      Role: !GetAtt GlueRole.Arn
       Command:
         Name: glueetl
-        ScriptLocation: s3://etl-prod-demo-123/scripts/etl_job.py
+        ScriptLocation: !Sub "s3://my-etl-data-bucket-${AWS::AccountId}/scripts/etl_job.py"
       GlueVersion: "4.0"
       WorkerType: G.1X
       NumberOfWorkers: 2

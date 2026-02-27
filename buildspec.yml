@@ -2,10 +2,15 @@ version: 0.2
 
 phases:
   install:
+    runtime-versions:
+      python: 3.9
+  pre_build:
     commands:
-      - echo Install phase
-
+      - echo "Running unit tests..."
+      - python tests/test_logic.py
   build:
     commands:
-      - echo Uploading ETL script to S3
-      - aws s3 cp scripts/etl_job.py s3://etl-prod-demo-123/scripts/
+      - echo "Tests passed! Syncing script to S3..."
+      - aws s3 cp scripts/etl_job.py s3://my-etl-data-bucket-$AWS_ACCOUNT_ID/scripts/
+      - echo "Deploying CloudFormation Stack..."
+      - aws cloudformation deploy --template-file template.yaml --stack-name my-etl-stack --capabilities CAPABILITY_NAMED_IAM
