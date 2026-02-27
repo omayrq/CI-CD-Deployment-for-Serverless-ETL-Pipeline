@@ -12,7 +12,7 @@ phases:
     commands:
       - echo "Tests passed! Syncing script to S3..."
       # Use your actual account ID here
-      - aws s3 cp scripts/etl_job.py s3://my-etl-data-bucket-${AWS::AccountId}/scripts/etl_job.py
+      - aws s3 cp scripts/etl_job.py s3://my-etl-data-bucket-528582359305/scripts/etl_job.py
 artifacts:
   files:
     - template.yaml
